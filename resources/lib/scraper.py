@@ -72,14 +72,17 @@ class Video(object):
         for strate in output_json['strates']:
             if strate['type'] == 'contentRow' or strate['type'] == 'contentGrid':
                 for item in strate['contents']:
-		    name = ''
-		    if 'title' in item:
-		        name = item['title']
-		    else:
-			name = item['subtitle']
-                    videos.append( { 'name': name.strip(),
-                        'url': item['onClick']['URLMedias'].replace('{FORMAT}','hls'),
-                        'icon': item['URLImage']})
+		    if item['type'] != 'landing':
+		        name = ''
+		        if 'title' in item:
+		            name = item['title']
+		            if 'subtitle' in item:
+			        name = name + ' - ' + item['subtitle']
+		        else:
+			    name = item['subtitle']
+                        videos.append( { 'name': name.strip(),
+                            'url': item['onClick']['URLMedias'].replace('{FORMAT}','hls'),
+                            'icon': item['URLImage']})
         #pprint.pprint(videos)
         return videos
 

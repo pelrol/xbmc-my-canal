@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 import scraper
 import pprint
@@ -8,7 +9,7 @@ class EmissionIT(unittest.TestCase):
         petit_journal = {
             'url': 'http://service.mycanal.fr/page/68645c6a02d5e836da428f9af93d87bb/1277.json',
             'name': 'Le Petit Journal',
-            'icon': 'http://media.mycanal.fr/image/50/3/pj212x159.2503.103.png',
+            'icon': 'http://media.mycanal.fr/image/69/1/images-212x159-petitjournal.5691.103.jpg',
         }
 
         emissions = scraper.Emission.get_emissions()
@@ -25,7 +26,7 @@ class VideoIT(unittest.TestCase):
         emission_url = 'http://service.mycanal.fr/page/68645c6a02d5e836da428f9af93d87bb/1277.json'
         test_video = {
             'url': 'http://service.mycanal.fr/getMediaUrl/68645c6a02d5e836da428f9af93d87bb/1107140.json?pfv=hls',
-            'name': 'Le Petit Journal du 22/07/14',
+            'name': u'Le Petit Journal du 22/07/14 - Best Of - La le\xe7on de danse de Fran\xe7ois Hollande',
             'icon': 'http://media.canal-plus.com/wwwplus/image/4/12/3/nip-nip-21099-640x360-rglrs.10099.jpg',
         }
 
@@ -35,6 +36,7 @@ class VideoIT(unittest.TestCase):
         self.assertTrue(len(videos) > 20)
 
         # hopefully Yale will always be there...
+	#pprint.pprint(videos)
         self.assertTrue(test_video in videos)
 
 class MediaIT(unittest.TestCase):
