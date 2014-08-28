@@ -5,14 +5,29 @@ import pprint
 
 class EmissionIT(unittest.TestCase):
 
-    def test_get_emissions(self):
+    def test_get_emission_types(self):
+        bonus_web = {
+            'name': 'Les bonus Web',
+            'index': 4,
+        }
+
+        emission_types = scraper.Emission.get_emission_types()
+
+        # currently there are 41 universities
+        self.assertTrue(len(emission_types) == 4)
+
+        # hopefully Yale will always be there...
+	#pprint.pprint(emission_types)
+        self.assertTrue(bonus_web in emission_types)
+
+    def test_get_emissions_from_index(self):
         petit_journal = {
             'url': 'http://service.mycanal.fr/page/68645c6a02d5e836da428f9af93d87bb/1277.json',
             'name': 'Le Petit Journal',
             'icon': 'http://media.mycanal.fr/image/69/1/images-212x159-petitjournal.5691.103.jpg',
         }
 
-        emissions = scraper.Emission.get_emissions()
+        emissions = scraper.Emission.get_emissions_from_index(1)
 
         # currently there are 41 universities
         self.assertTrue(len(emissions) > 20)

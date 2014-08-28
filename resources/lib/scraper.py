@@ -17,6 +17,7 @@ import json
 
 authenticateUrl = "http://service.mycanal.fr/authenticate.json/iphone/1.0?highResolution=1&paired=0&pdsDevice=%5B1%5D"
 my_canal_ua = 'myCANAL/1.0.2 CFNetwork/609.1.4 Darwin/13.0.0'
+default_emission_type = u'Divertissement \x26 Info'
 
 def get(url):
     '''Performs a GET request for the given url and returns the response'''
@@ -40,7 +41,30 @@ def _authenticate():
 class Emission(object):
 
     @classmethod
-    def get_emissions(cls):
+    def get_emission_types(cls):
+        '''Returns a list of emissions types available on the website.'''
+	emission_types=[]
+        content = _authenticate()
+        output_json = json.loads(content)
+        output_json['arborescence'] = dict((arbo['displayName'], arbo) for arbo in output_json['arborescence'])
+        a_la_demande = output_json['arborescence']['A la demande']
+        emissionsUrl = a_la_demande['onClick']['URLPage'];
+
+        content = get(emissionsUrl)
+        output_json = json.loads(content)
+        matched_contents = output_json['strates'][1]['contents']
+	type_index = 0
+
+        for strate in output_json['strates']:
+            if strate['type'] == 'contentRow' or strate['type'] == 'contentGrid':
+		emission_types.append({ 'name': strate['title'].strip(), 'index': type_index})
+	    type_index = type_index+1
+
+        #pprint.pprint(emissions)
+        return emission_types;
+
+    @classmethod
+    def get_emissions_from_index(cls, type_index):
         '''Returns a list of emissions available on the website.'''
         content = _authenticate()
         output_json = json.loads(content)
@@ -50,13 +74,13 @@ class Emission(object):
 
         content = get(emissionsUrl)
         output_json = json.loads(content)
-        strates = output_json['strates'][1]['contents']
-
+        matched_contents = output_json['strates'][int(type_index)]['contents']
+	
         emissions = [{
             'name': emission['onClick']['displayName'].strip(),
             'url': emission['onClick']['URLPage'],
             'icon': emission['URLImage'],
-        } for emission in strates]
+        } for emission in matched_contents]
 
         #pprint.pprint(emissions)
         return emissions;

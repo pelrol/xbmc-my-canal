@@ -8,7 +8,19 @@ plugin = Plugin()
 
 @plugin.route('/')
 def index():
-    emissions = scraper.Emission.get_emissions()
+    emission_types = scraper.Emission.get_emission_types()
+
+    pprint.pprint(emission_types)
+    items = [{
+        'label': emission_type['name'],
+        'path': plugin.url_for('show_emission_for_type', type_index=emission_type['index']),
+    } for emission_type in emission_types]
+
+    return items
+
+@plugin.route('/emission_type/<type_index>/')
+def show_emission_for_type(type_index):
+    emissions = scraper.Emission.get_emissions_from_index(type_index)
 
     items = [{
         'label': emission['name'],
