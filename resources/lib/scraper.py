@@ -96,7 +96,7 @@ class Video(object):
         for strate in output_json['strates']:
             if strate['type'] == 'contentRow' or strate['type'] == 'contentGrid':
                 for item in strate['contents']:
-		    if item['type'] != 'landing':
+		    if item['type'] != 'landing' and item['type'] != 'contentGrid':
 		        name = ''
 		        if 'title' in item:
 		            name = item['title']
